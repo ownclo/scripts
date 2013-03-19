@@ -1,0 +1,54 @@
+#!/bin/bash
+
+set -e
+
+# That stuff will generate a simple pdf from your text file.
+# You u don't want to print simple texts, right?
+# you'll have a better option.
+
+# setting up TeX headers code
+header="
+\\documentclass[11pt, a4paper, oneside, reqno]{amsproc}
+\\usepackage[T2A]{fontenc}
+\\usepackage[utf8x]{inputenc}
+\\usepackage{ucs}
+\\usepackage{cmap}
+\\usepackage[english,russian]{babel}
+\\oddsidemargin = 0pt
+\\textwidth = 14 cm
+\\topmargin = -2 cm
+\\textheight = 24 cm
+\\makeatletter
+
+\\begin{document}
+\\pagenumbering{gobble}
+"
+endline="\\end{document}"
+
+# checking whether the filename is given...
+if [ -z "$1" ]
+then
+    texname=out.tex
+    pdfname=out.pdf
+    bname=out
+    touch $texname
+    rm $texname
+
+    text=$(< /dev/stdin)
+    echo $header >> $texname
+    echo $text >> $texname
+    echo $endline >> $texname
+else
+    bname=$(basename $1 .txt)
+    texname=$bname.tex
+    pdfname=$bname.pdf
+    touch $texname
+    rm $texname
+
+    echo $header >> $texname
+    cat $1 >> $texname
+    echo $endline >> $texname
+fi
+
+pdflatex $texname $pdfname
+rm $bname.log $bname.aux $texname

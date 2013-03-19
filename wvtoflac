@@ -1,0 +1,24 @@
+#!/bin/sh
+
+# Takes two arguments: name of WAV file,
+# name of the folder (optionally)
+
+bname=$(basename $1 .wv)
+wavfile=$bname.wav
+cuefile=$bname.cue
+
+wvunpack -cc $1
+shnsplit -o flac -f $cuefile $wavfile
+cuetag $cuefile split-track*.flac
+lltag --yes --no-tagging --rename '%n. %t' `ls split-track*.flac`
+
+# If the foldername is given, put flac there.
+# Otherwise, assume that $BNAME is a good name
+if [ -z "$2" ]
+then dst=$bname # No argument given
+else dst=$2
+fi
+
+mkdir $dst
+mv *.flac $dst
+rm $wavfile $cuefile

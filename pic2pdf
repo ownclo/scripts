@@ -1,0 +1,8 @@
+#!/bin/sh
+
+bname=`basename "$1" .pic`
+out_name="$bname.pdf"
+
+pic $1 | groff |
+ps2pdf - > $out_name &&
+pdfcrop $out_name $out_name

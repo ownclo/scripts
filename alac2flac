@@ -1,0 +1,8 @@
+#! /bin/bash
+
+find . -type f -iname "*.m4a" | 
+parallel -j +0 "alac-decoder {} |
+flac --best - -fo {.}.flac && rm {}"
+#parallel -j +0 "alac-decode {} |
+#flac --best - -Vo {.}.flac && rm {}"
+

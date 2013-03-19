@@ -1,0 +1,16 @@
+#!/bin/sh
+
+mv *.ape $1.ape
+mv *.cue $1.cue
+rm *.log
+
+avconv -i $1.ape $1.wav
+shnsplit -o flac -f $1.cue $1.wav
+cuetag $1.cue split-track*.flac
+lltag --yes --no-tagging --rename '%n. %t' `ls split-track*.flac`
+
+mkdir $1-apecue
+mv *.ape $1-apecue
+mv *.cue $1-apecue
+rm $1.wav
+
